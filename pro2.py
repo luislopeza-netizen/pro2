@@ -22,3 +22,16 @@ crearTabla()
 cr.execute('SELECT * FROM estudiantes')
 datos = cr.fetchall()
 
+# creacion de ventanas 
+ventana = Tk()
+ventana.title("Lista de Estudiantes")
+ventana.geometry("500x300")
+
+# Crear Treeview
+tabla = ttk.Treeview(ventana, columns=("ID", "Nombre", "Marca", "Stock"), show="headings")
+tabla.heading("ID", text="ID")
+tabla.heading("Nombre", text="Nombre")
+tabla.heading("Marca", text="Marca")
+tabla.heading("Stock", text="Stock")
+
+
