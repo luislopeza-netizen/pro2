@@ -9,13 +9,14 @@ cr = base_de_datos.cursor()
 # Crear tabla con columnas ID, Nombre, Precio, Stock
 def crearTabla():
     cr.execute('''
-        CREATE TABLE productos (
+        CREATE TABLE IF NOT EXISTS productos (
             ID INTEGER PRIMARY KEY AUTOINCREMENT,
             Nombre TEXT NOT NULL,
             Precio TEXT NOT NULL,
             Stock TEXT NOT NULL
         );
     ''')
+
     base_de_datos.commit()
 
 def insertarDatos():
