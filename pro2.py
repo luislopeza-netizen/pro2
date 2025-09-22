@@ -8,7 +8,6 @@ cr = base_de_datos.cursor()
 
 # Crear tabla con columnas ID, Nombre, Precio, Stock
 def crearTabla():
-    cr.execute('DROP TABLE IF EXISTS productos')  # Elimina si ya existe
     cr.execute('''
         CREATE TABLE productos (
             ID INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -31,33 +30,33 @@ def insertarDatos():
     base_de_datos.commit()
 
 
-# Obtener datos desde la base
+#btener datos desde la base
 def obtenerDatos():
     cr.execute("SELECT * FROM productos")
     return cr.fetchall()
 
-# Rellenar tabla en la interfaz
+#rellenar tabla en la interfaz
 def rellenar_tabla():
     for fila in obtenerDatos():
         tabla.insert("", "end", values=fila)
 
-# Crear tabla e insertar datos
+#crear tabla e insertar datos
 crearTabla()
 insertarDatos()
 
-# Interfaz gráfica
+#interfaz gráfica
 app = Tk()
 app.title("Inventario de Productos")
 app.geometry("500x500")
 
-# Crear Treeview
+#crear Treeview
 tabla = ttk.Treeview(app, columns=("ID", "Nombre", "Precio", "Stock"), show="headings")
 for col in ("ID", "Nombre", "Precio", "Stock"):
     tabla.heading(col, text=col)
     tabla.column(col, anchor="center", width=100)
 tabla.pack(pady=20)
 
-def abrir_formulario_agregar():
+def abrirformulario():
     ventana_agregar = Toplevel(app)
     ventana_agregar.title("Agregar Producto")
     ventana_agregar.geometry("300x200")
@@ -74,7 +73,7 @@ def abrir_formulario_agregar():
     entry_stock = Entry(ventana_agregar)
     entry_stock.grid(row=2, column=1, padx=10, pady=5)
 
-    def agregar_desde_ventana():
+    def agregar():
         nombre = entry_nombre.get()
         precio = entry_precio.get()
         stock = entry_stock.get()
@@ -84,13 +83,13 @@ def abrir_formulario_agregar():
             tabla.insert("", "end", values=(cr.lastrowid, nombre, precio, stock))
             ventana_agregar.destroy()
 
-    Button(ventana_agregar, text="Agregar", command=agregar_desde_ventana).grid(row=3, column=0, columnspan=2, pady=10)
+    Button(ventana_agregar, text="Agregar", command=agregar).grid(row=3, column=0, columnspan=2, pady=10)
 
-# Botón en la ventana principal para abrir el formulario
-boton_agregar = Button(app, text="Agregar Producto", command=abrir_formulario_agregar)
+#botón en la ventana principal para abrir el formulario
+boton_agregar = Button(app, text="Agregar Producto", command=abrirformulario)
 boton_agregar.pack(pady=10)
 
-def abrir_formulario_eliminar():
+def formularioeliminar():
     ventana_eliminar = Toplevel(app)
     ventana_eliminar.title("Eliminar Producto")
     ventana_eliminar.geometry("300x150")
@@ -105,7 +104,7 @@ def abrir_formulario_eliminar():
             cr.execute("DELETE FROM productos WHERE ID = ?", (id_producto,))
             base_de_datos.commit()
 
-            # Limpiar y actualizar tabla
+            #limpiar y actualizar tabla
             for item in tabla.get_children():
                 tabla.delete(item)
             rellenar_tabla()
@@ -114,11 +113,11 @@ def abrir_formulario_eliminar():
 
     Button(ventana_eliminar, text="Eliminar", command=eliminar_producto).pack(pady=10)
 
-boton_eliminar = Button(app, text="Eliminar Producto", command=abrir_formulario_eliminar)
+boton_eliminar = Button(app, text="Eliminar Producto", command=formularioeliminar)
 boton_eliminar.pack(pady=5)
 
-# Mostrar datos al iniciar
+#mostrar datos al iniciar
 rellenar_tabla()
 
-# Ejecutar la app
+#ejecutar la app
 app.mainloop()
